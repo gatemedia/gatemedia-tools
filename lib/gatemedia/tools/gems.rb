@@ -62,7 +62,7 @@ module Gemfile
 
   def self.github_gems
     self.gemfile_lines.keep_if { |line|
-        self.is_gem(line) && self.is_from_github(line)
+        self.is_github_gem line
     }.collect { |line|
         self.gem_name line
     }
@@ -103,12 +103,8 @@ module Gemfile
     open('Gemfile').readlines
   end
 
-  def self.is_from_github line
-    /gem\s+['"](.+?)['"].+github.+branch:/.match line
-  end
-
-  def self.is_gem line
-    /^gem\s/.match line.strip
+  def self.is_github_gem line
+    /gem\s+['"](.+?)['"].+github.+branch:/.match line.strip
   end
 
   def self.gem_name line
