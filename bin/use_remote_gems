@@ -2,16 +2,4 @@
 require 'gatemedia/tools/gems'
 
 
-github_gems = Gemfile::gem_names(Gemfile::github_gems(Gemfile::gems(Gemfile::lines)))
-local_gems = Bundle::gem_names(Bundle::local_gems(Bundle::config))
-
-local_gems.each { |gem_name|
-    if Gemfile::is_private? gem_name
-        Gemfile::comment_github_ref gem_name
-    end
-}
-
-gems_to_unlocalize = local_gems & github_gems
-gems_to_unlocalize.each { |gem_name|
-    Bundle::use_remote gem_name
-}
+Gem::Manager.new.use_remotes
