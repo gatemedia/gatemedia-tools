@@ -1,0 +1,17 @@
+#!/usr/lib/ruby
+require 'gatemedia/tools/gems'
+
+
+github_gems = Gemfile::gem_names(Gemfile::github_gems(Gemfile::gems(Gemfile::lines)))
+local_gems = Bundle::gem_names(Bundle::local_gems(Bundle::config))
+
+local_gems.each { |gem_name|
+    if Gemfile::is_private? gem_name
+        Gemfile::uncomment_github_ref gem_name
+    else
+}
+
+gems_to_localize = github_gems - local_gems
+gems_to_localize.each { |gem_name|
+    Bundle::use_local gem_name
+}
