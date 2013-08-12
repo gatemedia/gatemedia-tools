@@ -1,0 +1,1 @@
+require 'gatemedia_tools'
