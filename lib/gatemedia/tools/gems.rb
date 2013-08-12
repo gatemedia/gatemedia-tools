@@ -104,7 +104,7 @@ module Gemfile
   end
 
   def self.is_from_github line
-    /gem\s+['"](.+?)['"].+github.+/.match line
+    /gem\s+['"](.+?)['"].+github.+branch:/.match line
   end
 
   def self.is_gem line
@@ -185,8 +185,7 @@ puts ">>>> #{gem_name} ALREADY REMOTE".magenta
 
       if dirtyBundler || dirtyGemfile
 puts ">>>> REFRESH BUNDLE".magenta
-        `sync`
-        puts `bundle --binstubs`
+        puts `bundle`
 else
 puts ">>>> DO NOT REFRESH BUNDLE".magenta
 end
