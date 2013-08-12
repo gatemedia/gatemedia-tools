@@ -5,7 +5,7 @@ require "gatemedia_tools/version"
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = "gatemedia_tools"
+  s.name        = "gatemedia-tools"
   s.version     = GatemediaTools::VERSION
   s.authors     = ["Developers @ GateMedia"]
   s.email       = ["dev@gatemedia.ch"]
