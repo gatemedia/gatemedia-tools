@@ -1,0 +1,11 @@
+#!/usr/lib/ruby
+require 'gatemedia/tools/gems'
+
+
+local_gems = Bundle::gem_names(Bundle::local_gems(Bundle::config))
+github_gems = Gemfile::gem_names(Gemfile::github_gems(Gemfile::gems(Gemfile::lines)))
+
+gems_to_unlocalize = local_gems & github_gems
+gems_to_unlocalize.each { |gem_name|
+    Bundle::use_remote gem_name
+}
