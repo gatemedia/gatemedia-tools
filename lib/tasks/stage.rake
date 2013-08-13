@@ -1,7 +1,7 @@
 
 def stage branch, options={}
-    branches = `git branch`.split("\n")
-    current_branch = branches.find { |b| b.first == '*' }.split.last.to_sym
+    branches = `git branch`.split "\n"
+    current_branch = branches.find { |b| b[0] == '*' }.split.last.to_sym
 
     changes = `git status -s`.rstrip
     unless changes.empty?
