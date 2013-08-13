@@ -28,7 +28,6 @@ module Bundle
   def self.use_remote gem_name
     puts "Point '#{gem_name}' to remote repository".red
     `bundle config --delete local.#{gem_name}`
-puts "Pointed '#{gem_name}' to remote repository...".magenta
   end
 
   def self.use_local gem_name
@@ -68,26 +67,6 @@ module Gemfile
     }
   end
 
-  def self.comment_github_ref gem_name
-    dirty = false
-    self.write_sync self.gemfile_lines.collect { |line|
-        new_line = self.toggle_comment line, gem_name, 'git', 'github'
-        dirty = new_line != line
-        new_line
-    }
-    dirty
-  end
-
-  def self.uncomment_github_ref gem_name
-    dirty = false
-    self.write_sync self.gemfile_lines.collect { |line|
-        new_line = self.toggle_comment line, gem_name, 'github', 'git'
-        dirty = new_line != line
-        new_line
-    }
-    dirty
-  end
-
   def self.is_private? gem_name
     self.gemfile_lines.keep_if { |line|
         /gem\s+['"](.+?)['"].+GITHUB_TOKEN/.match line
@@ -104,28 +83,11 @@ module Gemfile
   end
 
   def self.is_github_gem line
-    /gem\s+['"](.+?)['"].+github.+branch:/.match line.strip
+    /^gem\s+['"](.+?)['"].+github.+branch:/.match line.strip
   end
 
   def self.gem_name line
     /['"](.+?)['"]/.match(line.strip)[1]
-  end
-
-  def self.toggle_comment line, gem_name, commented, uncommented
-    if /^# gem '#{gem_name}', #{commented}:.*/.match line
-      line[2..-1]
-    elsif /^gem '#{gem_name}', #{uncommented}:.*/.match line
-      "# #{line}"
-    else
-      line
-    end
-  end
-
-  def self.write_sync lines
-    output = open 'Gemfile', 'w'
-    output.sync = true
-    output.write lines.join
-    output.flush
   end
 end
 
@@ -137,85 +99,40 @@ module Gem
       dirties = Gemfile::github_gems.collect { |gem_name|
         self.use_local gem_name
       }
-puts ">>>> DIRTIES: #{dirties} / #{dirties.find true}".magenta
       if dirties.include? true
-puts ">>>> REFRESH BUNDLE".magenta
+        puts "Refresh bundle".magenta
         puts `bundle --binstubs`
-else
-puts ">>>> DO NOT REFRESH BUNDLE".magenta
-end
+      end
     end
   
     def use_local gem_name
       dirtyBundler = false
       unless Bundle::local_gems.include? gem_name
-puts ">>>> #{gem_name} SET TO LOCAL".magenta
           Bundle::use_local gem_name
           dirtyBundler = true
-else
-puts ">>>> #{gem_name} ALREADY LOCAL".magenta
       end
-      
-      dirtyGemfile = false
-      dirtyGemfile = Gemfile::uncomment_github_ref gem_name if Gemfile::is_private? gem_name
 
-      dirtyBundler || dirtyGemfile
+      dirtyBundler
     end
 
     def use_remotes
-      dirtyBundler = false
-      Gemfile::github_gems.collect { |gem_name|
-        if Bundle::local_gems.include? gem_name
-puts ">>>> #{gem_name} SET TO REMOTE".magenta
-          Bundle::use_remote gem_name
-          dirtyBundler = true
-else
-puts ">>>> #{gem_name} ALREADY REMOTE".magenta
-        end
-      }
-
-      dirtyGemfile = false
-      Gemfile::github_gems.collect { |gem_name|
-        dirtyGemfile = Gemfile::comment_github_ref gem_name if Gemfile::is_private? gem_name
-      }
-
-      if dirtyBundler || dirtyGemfile
-puts ">>>> REFRESH BUNDLE".magenta
-        puts `bundle`
-else
-puts ">>>> DO NOT REFRESH BUNDLE".magenta
-end
-    end
-
-    def use_remotes2
       dirties = Gemfile::github_gems.collect { |gem_name|
         self.use_remote gem_name
       }
-puts ">>>> DIRTIES: #{dirties} / #{dirties.find true}".magenta
       if dirties.include? true
-puts ">>>> REFRESH BUNDLE".magenta
+        puts "Refresh bundle".magenta
         puts `bundle --binstubs`
-else
-puts ">>>> DO NOT REFRESH BUNDLE".magenta
-end
+      end
     end
 
     def use_remote gem_name
       dirtyBundler = false
       if Bundle::local_gems.include? gem_name
-puts ">>>> #{gem_name} SET TO REMOTE".magenta
           Bundle::use_remote gem_name
           dirtyBundler = true
-else
-puts ">>>> #{gem_name} ALREADY REMOTE".magenta
       end
 
-      dirtyGemfile = false
-      dirtyGemfile = Gemfile::comment_github_ref gem_name if Gemfile::is_private? gem_name
-
-puts ">>>> >>>> PRESS ENTER <<<< <<<<".magenta
-STDIN.getc
-      dirtyBundler || dirtyGemfile
+      dirtyBundler
     end
   end
 end
