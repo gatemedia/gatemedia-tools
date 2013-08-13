@@ -5,6 +5,7 @@ module GatemediaTools
 
   class Railtie < ::Rails::Railtie
     rake_tasks do
+      load 'tasks/run.rake'
       load 'tasks/stage.rake'
     end
   end
