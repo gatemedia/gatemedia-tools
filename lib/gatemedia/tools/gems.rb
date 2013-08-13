@@ -35,11 +35,9 @@ module Bundle
       end
       puts "Point '#{gem_name}' to local clone @ #{path}".green
       `bundle config local.#{gem_name} #{path}`
-      break
     when :remote
       puts "Point '#{gem_name}' to remote repository".red
       `bundle config --delete local.#{gem_name}`
-      break
     end
   end
 
