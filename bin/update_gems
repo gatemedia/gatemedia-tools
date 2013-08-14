@@ -2,4 +2,4 @@
 require 'gatemedia/tools/gems'
 
 
-Gem::Manager.use_locals
+Gem::Manager.update

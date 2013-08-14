@@ -2,4 +2,4 @@
 require 'gatemedia/tools/gems'
 
 
-Gem::Manager.new.use_remotes
+Gem::Manager.use_remotes
