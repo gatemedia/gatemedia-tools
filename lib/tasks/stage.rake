@@ -54,7 +54,6 @@ namespace :stage do
 
     desc "Deploy to production stage"
     task :prod do
-        #TODO rename prod to master to comply w/ new dev rules
-        stage :prod, merge: :dev
+        stage :master, merge: :dev
     end
 end
