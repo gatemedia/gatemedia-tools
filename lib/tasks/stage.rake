@@ -32,6 +32,7 @@ def stage branch, options={}
 
     puts "Deploying to #{branch} stage".green
     `git push sg-#{branch} #{branch}:master`
+    `heroku config:set GIT_HASH=$(git rev-parse --verify HEAD) --app=sg-#{branch}`
 
     unless branch == current_branch
         puts "Switching back to branch [#{current_branch}]"
