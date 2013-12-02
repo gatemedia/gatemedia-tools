@@ -43,6 +43,8 @@ def stage branch, options={}
         puts 'Changes restored'
     end
     puts "Deployment to #{branch} done".green
+
+    exit # avoid double-run... weird!
 end
 
 
